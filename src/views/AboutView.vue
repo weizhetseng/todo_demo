@@ -1,18 +1,24 @@
 <template>
   <BtnHeader />
   <div class="container mt-10">
-    <div class="w-1/2 mx-auto">
+    <div class="w-full lg:w-2/3 xl:w-1/2 mx-auto">
       <form action="" class="relative mb-4 rounded-xl overflow-hidden shadow-shadow_main">
-        <input type="text" class="w-full px-4 py-3" placeholder="新增待辦事項" />
+        <input
+          type="text"
+          class="w-full px-4 py-3"
+          placeholder="新增待辦事項"
+          v-model="todoInput.title"
+        />
         <button
           type="button"
           class="w-10 absolute top-1/2 right-2 h-10 rounded-xl bg-black1 flex items-center justify-center -translate-y-1/2"
+          @click="postData()"
         >
           <img src="../assets/img/add.png" alt="" />
         </button>
       </form>
       <div class="flex items-center justify-center flex-col" v-if="listData.length === 0">
-        <p class="font-bold text-3xl">目前尚無待辦事項</p>
+        <p class="font-bold text-3xl mb-5">目前尚無待辦事項</p>
         <img class="w-2/3" src="../assets/img/empty.png" alt="" />
       </div>
       <div class="bg-white rounded-xl overflow-hidden shadow-shadow_main" v-else>
@@ -52,29 +58,15 @@
           </li>
         </ul>
         <ul class="p-6">
-          <li class="border-b border-gray-2 py-4 first:pt-0">
+          <li
+            class="border-b border-gray-2 py-4 first:pt-0"
+            v-for="list in listData"
+            :key="list.id"
+          >
             <div class="flex gap-5 justify-between">
               <div class="flex gap-4 flex-1">
                 <input type="checkbox" name="" id="" />
-                <p>測試內容測試內容測試內容測試內容測試內容</p>
-              </div>
-              <button type="button"><img src="../assets/img/close.png" alt="" /></button>
-            </div>
-          </li>
-          <li class="border-b border-gray-2 py-4 first:pt-0">
-            <div class="flex gap-5 justify-between">
-              <div class="flex gap-4 flex-1">
-                <input type="checkbox" name="" id="" />
-                <p>測試內容測試內容測試內容測試內容測試內容</p>
-              </div>
-              <button type="button"><img src="../assets/img/close.png" alt="" /></button>
-            </div>
-          </li>
-          <li class="border-b border-gray-2 py-4 first:pt-0">
-            <div class="flex gap-5 justify-between">
-              <div class="flex gap-4 flex-1">
-                <input type="checkbox" name="" id="" />
-                <p>測試內容測試內容測試內容測試內容測試內容</p>
+                <p>{{ list.title }}</p>
               </div>
               <button type="button"><img src="../assets/img/close.png" alt="" /></button>
             </div>
@@ -93,9 +85,15 @@
 
 <script setup lang="ts">
 import BtnHeader from '@/components/BtnHeader.vue'
+import { getTodoList, postTodoList } from '@/api/http'
 import { onMounted, ref } from 'vue'
-import axios from 'axios'
-const isType = ref(0)
+
+const isType = ref<number>(0)
+
+const todoInput = ref({
+  title: ''
+})
+
 interface ToDoList {
   title: string
   id: string
@@ -104,11 +102,21 @@ interface ToDoList {
 const listData = ref<ToDoList[]>([])
 
 const getData = async () => {
-  await axios
-    .get('https://todo-api-bblo.onrender.com/todos')
+  getTodoList()
     .then((res) => {
-      console.log(res.data.datas)
-      listData.value = res.data.datas
+      listData.value = res.data.todoList
+      console.log(res)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
+
+const postData = () => {
+  postTodoList(todoInput.value)
+    .then((res) => {
+      listData.value = res.data.todoList
+      console.log(res)
     })
     .catch((error) => {
       console.log(error)
