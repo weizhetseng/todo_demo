@@ -12,7 +12,6 @@
         <button
           type="button"
           class="w-10 absolute top-1/2 right-2 h-10 rounded-xl bg-black1 flex items-center justify-center -translate-y-1/2"
-          @click="postData()"
         >
           <img src="../assets/img/add.png" alt="" />
         </button>
@@ -65,7 +64,7 @@
           >
             <div class="flex gap-5 justify-between">
               <div class="flex gap-4 flex-1">
-                <input type="checkbox" name="" id="" />
+                <input type="checkbox" name="" id="" v-model="list.status" />
                 <p>{{ list.title }}</p>
               </div>
               <button type="button"><img src="../assets/img/close.png" alt="" /></button>
@@ -85,8 +84,7 @@
 
 <script setup lang="ts">
 import BtnHeader from '@/components/BtnHeader.vue'
-import { getTodoList, postTodoList } from '@/api/http'
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 
 const isType = ref<number>(0)
 
@@ -95,35 +93,10 @@ const todoInput = ref({
 })
 
 interface ToDoList {
+  status: boolean
   title: string
-  id: string
+  id: number
 }
 
 const listData = ref<ToDoList[]>([])
-
-const getData = async () => {
-  getTodoList()
-    .then((res) => {
-      listData.value = res.data.todoList
-      console.log(res)
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-}
-
-const postData = () => {
-  postTodoList(todoInput.value)
-    .then((res) => {
-      listData.value = res.data.todoList
-      console.log(res)
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-}
-
-onMounted(() => {
-  getData()
-})
 </script>
