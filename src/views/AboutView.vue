@@ -5,7 +5,7 @@
       <form action="" class="relative mb-4 rounded-xl overflow-hidden shadow-shadow_main">
         <input
           type="text"
-          class="w-full px-4 py-3"
+          class="w-full px-4 py-3 outline-none"
           placeholder="新增待辦事項"
           v-model="postStore.newPost"
         />
@@ -153,7 +153,7 @@
       </div>
       <div class="flex items-center justify-center flex-col" v-else>
         <p class="font-bold text-3xl mb-5">目前尚無待辦事項</p>
-        <img class="w-2/3" src="../assets/img/empty.png" alt="" />
+        <img class="w-auto" src="../assets/img/empty.png" alt="" />
       </div>
     </div>
   </div>
